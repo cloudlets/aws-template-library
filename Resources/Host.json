@@ -350,11 +350,12 @@
           "export NEPHO_S3_BUCKET_KEY='",   {"Fn::GetAtt": ["{{ name }}Keys", "SecretAccessKey"]},  "'\n",
           {% endif %}
 
+{#
           {% if management !='script' and management != 'none' %}
           "export NEPHO_GIT_REPO_URL='",    { "Ref" : "ConfigMgmtGitRepo" }, "'\n",
           "export NEPHO_GIT_REPO_BRANCH='", { "Ref" : "ConfigMgmtGitRepoBranch" }, "'\n",
           {% endif %}
-
+#}
           "export NEPHO_BASE64_CONFIGS='{{ configs }}'\n",
           "export NEPHO_CONFIGS=$( echo ${NEPHO_BASE64_CONFIGS} | base64 --decode )\n",
 

@@ -154,7 +154,7 @@
         "Statistic" : "Average",
         "Period" : "60",
         "EvaluationPeriods" : "2",
-        "Threshold" : { "Ref" : "{{ latencyup }}" },
+        "Threshold" : "{{ latencyup }}", 
         "AlarmActions" : [
           {
             "Ref" : "{{ name }}ScaleUpPolicy"
@@ -180,7 +180,7 @@
         "Statistic" : "Average",
         "Period" : "60",
         "EvaluationPeriods" : "5",
-        "Threshold" : { "Ref" : "{{ latencydown }}" },
+        "Threshold" : "{{ latencydown }}",
         "AlarmActions" : [
           {
             "Ref" : "{{ name }}ScaleDownPolicy"
@@ -401,13 +401,14 @@
 		  "export NEPHO_SES_SMTP_PORT='",     { "Ref" : "SESPort" }, "'\n",
 		  "export NEPHO_SES_SMTP_USER='",     { "Ref" : "SESUsername" }, "'\n",
 		  "export NEPHO_SES_SMTP_PASSWORD='", { "Ref" : "SESPassword" }, "'\n",
-		  
+
+{#		  
           "# pull & setup puppet modules and run manifest\n",
           {% if management !='script' and management != 'none' %}
           "export NEPHO_GIT_REPO_URL='",    { "Ref" : "ConfigMgmtGitRepo" }, "'\n",
           "export NEPHO_GIT_REPO_BRANCH='", { "Ref" : "ConfigMgmtGitRepoBranch" }, "'\n",
           {% endif %}
-
+#}  
           "export NEPHO_BASE64_CONFIGS='{{ configs }}'\n",
           "export NEPHO_CONFIGS=$( echo ${NEPHO_BASE64_CONFIGS} | base64 --decode )\n",
                

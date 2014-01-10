@@ -45,7 +45,9 @@
     "PayloadURL":         { "Type": "String" },
     "AWSAccessKeyID":     { "Type": "String" },
     "AWSSecretAccessKey": { "Type": "String" },
-    "AWSRegion":          { "Type": "String" },
+    "AWSRegion":          { "Type": "String" }
+{#
+    ,
 
     "ConfigMgmtGitRepo": {
       "Default" : "http://(none)/",
@@ -57,5 +59,6 @@
       "Default": "master",
       "Description" : "The url of the git repo to pull and apply",
       "Type": "String"
-}
+    }
+#}    
 
