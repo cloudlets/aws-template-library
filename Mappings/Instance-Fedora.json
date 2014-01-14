@@ -1,0 +1,52 @@
+"Fedora-x86_64-19-20130627-sda": {
+    "ap-northeast-1": {
+        "AMI": "ami-95b52094"
+    },
+    "ap-southeast-1": {
+        "AMI": "ami-da450c88"
+    },
+    "ap-southeast-2": {
+        "AMI": "ami-5565f66f"
+    },
+    "eu-west-1": {
+        "AMI": "ami-f1031e85"
+    },
+    "sa-east-1": {
+        "AMI": "ami-b055f0ad"
+    },
+    "us-east-1": {
+        "AMI": "ami-b22e5cdb"
+    },
+    "us-west-1": {
+        "AMI": "ami-10cce555"
+    },
+    "us-west-2": {
+        "AMI": "ami-9727b7a7"
+    }
+},
+"Fedora-x86_64-18-20130521-sda": {
+    "ap-northeast-1": {
+        "AMI": "ami-33b23b32"
+    },
+    "ap-southeast-1": {
+        "AMI": "ami-4c327c1e"
+    },
+    "ap-southeast-2": {
+        "AMI": "ami-33d24109"
+    },
+    "eu-west-1": {
+        "AMI": "ami-43809137"
+    },
+    "sa-east-1": {
+        "AMI": "ami-08eb4e15"
+    },
+    "us-east-1": {
+        "AMI": "ami-b71078de"
+    },
+    "us-west-1": {
+        "AMI": "ami-674f6122"
+    },
+    "us-west-2": {
+        "AMI": "ami-fd9302cd"
+    }
+}
