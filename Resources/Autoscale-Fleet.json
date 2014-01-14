@@ -6,15 +6,15 @@
 {# ****  General host on EC2, in or out of a VPC **** #}
 
     {%- macro fleet(
-                     name, 
-                     subnet=None, 
+                     name,
+                     subnet=None,
                      subnet2=None,
-                     elb=None, 
-                     elb2=None, 
+                     elb=None,
+                     elb2=None,
                      public_hostname=None,
-                     bucket=None, 
+                     bucket=None,
                      public_bucket=None,
-                     rds=None, 
+                     rds=None,
                      ports=[80],
                      latencyup=0.3,
                      latencydown=0.05
@@ -25,20 +25,20 @@
         {% set public_hostname = "\"" ~ public_hostname ~ "\"" %}
       {% endif %}
     {% endif %}
-    
+
     {# ************************
-    
+
              IAM Objects
-       
+
        ************************ #}
-         
+
     "{{ name }}User" : {
       "Type" : "AWS::IAM::User",
       "Properties" : {
         "Path": "/",
         "Policies": [{
           "PolicyName": "root",
-          "PolicyDocument": { 
+          "PolicyDocument": {
             "Statement":[
               {
                 "Effect": "Allow",
@@ -51,42 +51,42 @@
                 "Effect": "Allow",
                 "Action": "elasticloadbalancing:DescribeInstanceHealth",
                 "Resource": "*"
-              }                   
+              }
             ]
           }
         }]
       }
     },
 
-    {% if bucket is not none  %}   
+    {% if bucket is not none  %}
     "{{ name }}BucketPolicy" : {
       "Type" : "AWS::S3::BucketPolicy",
       "Properties" : {
         "PolicyDocument": {
           "Id":"PrivateBucketPolicy",
-          "Statement":[ 
-            {% if public_bucket is not none and public_bucket == true %} 
+          "Statement":[
+            {% if public_bucket is not none and public_bucket == true %}
             {
-	          "Sid":"AddPerm",
-              "Effect":"AnonymousRead",
-	          "Principal": { "AWS": "*"},
-              "Action":["s3:GetObject"],
-              "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "{{ bucket }}" } , "/*" ]]}
+              "Sid":"AddPerm",
+                "Effect":"AnonymousRead",
+                "Principal": { "AWS": "*"},
+                "Action":["s3:GetObject"],
+                "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "{{ bucket }}" } , "/*" ]]}
             },
             {% endif %}
             {
               "Sid":"ReadBucketAccess",
-	          "Action":["s3:ListBucket*", "s3:GetBucket*"],
-	          "Effect":"Allow",
-	          "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "{{ bucket }}" } , "" ]]},
-	          "Principal":{ "AWS": { "Fn::GetAtt" : [ "{{ name }}User", "Arn" ]} }
+                "Action":["s3:ListBucket*", "s3:GetBucket*"],
+                "Effect":"Allow",
+                "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "{{ bucket }}" } , "" ]]},
+                "Principal":{ "AWS": { "Fn::GetAtt" : [ "{{ name }}User", "Arn" ]} }
             },
             {
               "Sid":"ReadWriteObjectAccess",
-	          "Action":["s3:*"],
-	          "Effect":"Allow",
-	          "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "{{ bucket }}" } , "/*" ]]},
-	          "Principal":{ "AWS": { "Fn::GetAtt" : [ "{{ name }}User", "Arn" ]} }
+                "Action":["s3:*"],
+                "Effect":"Allow",
+                "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "{{ bucket }}" } , "/*" ]]},
+                "Principal":{ "AWS": { "Fn::GetAtt" : [ "{{ name }}User", "Arn" ]} }
             }
           ]
         },
@@ -94,21 +94,21 @@
       }
     },
     {% endif %}
-    
+
     "{{ name }}Keys" : {
       "Type" : "AWS::IAM::AccessKey",
       "Properties" : {
         "UserName" : {"Ref": "{{ name }}User"}
       }
     },
-      
+
     {# ************************
-    
-           Autoscale & Instance 
+
+           Autoscale & Instance
              Objects
-       
+
        ************************ #}
-               
+
     "{{ name }}Fleet" : {
       {% if subnet is not none  %}"DependsOn" : "NATIPAddress",{% endif %}
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
@@ -122,8 +122,8 @@
         "LoadBalancerNames" : [ { "Ref" : "{{ elb }}" } ],
         "Tags" : [ { "Key" : "Network", "Value" : "Public", "PropagateAtLaunch" : "true" } ]
       }
-    },  
-    
+    },
+
     "{{ name }}SecurityGroup" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
@@ -132,8 +132,8 @@
         "SecurityGroupEgress" : [
             { "IpProtocol" : "tcp", "FromPort" : "0", "ToPort" : "65535", "CidrIp" : "0.0.0.0/0" },
             { "IpProtocol" : "udp", "FromPort" : "0", "ToPort" : "65535", "CidrIp" : "0.0.0.0/0" }
-         ],        
-        {% endif %} 
+         ],
+        {% endif %}
         "GroupDescription" : "Security group with access for {{ ports }}",
         "SecurityGroupIngress" : [
           {% for p in ports %}
@@ -141,8 +141,8 @@
           {% endfor %}
           {"IpProtocol" : "tcp", "FromPort" : "22",  "ToPort" : "22",  "CidrIp" : { "Ref" : "SSHAccessRange"}}
         ]
-      }      
-    },     
+      }
+    },
 
 
     "{{ name }}ScaleUpAlarm" : {
@@ -154,7 +154,7 @@
         "Statistic" : "Average",
         "Period" : "60",
         "EvaluationPeriods" : "2",
-        "Threshold" : "{{ latencyup }}", 
+        "Threshold" : "{{ latencyup }}",
         "AlarmActions" : [
           {
             "Ref" : "{{ name }}ScaleUpPolicy"
@@ -163,7 +163,7 @@
         "Dimensions" : [
           {
             "Name" : "LoadBalancerName",
-            "Value" :{ "Ref" : "{{ elb }}" } 
+            "Value" :{ "Ref" : "{{ elb }}" }
           }
         ],
         "ComparisonOperator" : "GreaterThanThreshold"
@@ -230,23 +230,23 @@
               "yum" : {
                 {% for pkg in packages %}
                 "{{ pkg }}" : [],
-                {% endfor %}  
+                {% endfor %}
                 {% if management == 'puppet' %}
                 "ruby"            : [],
                 "rubygems"        : [],
                 "ruby-devel"      : [],
                 "gcc"             : [],
                 "gcc-c++"         : [],
-                {% endif %}                
+                {% endif %}
                 "curl"         : [],
                 "wget"         : [],
-                "git"              : []        
+                "git"              : []
               }
             },
 
             "files" : {
-            
-              {% if management == 'none' %} 
+
+              {% if management == 'none' %}
               "/var/www/html/index.html" : {
                 "content" : { "Fn::Join" : ["\n", [
                   "<img src=\"https://s3.amazonaws.com/cloudformation-examples/cloudformation_graphic.png\" alt=\"AWS CloudFormation Logo\"/>",
@@ -269,7 +269,7 @@
                 "owner"   : "root",
                 "group"   : "root"
               },
-              
+
               "/etc/profile.d/aws.sh" : {
                 "content" : { "Fn::Join" : ["", [
                   "AWS_CONFIG_FILE=/etc/aws/credentials\n",
@@ -279,7 +279,7 @@
                 "owner"   : "root",
                 "group"   : "root"
               },
-                            	
+
               "/etc/cfn/cfn-credentials" : {
                 "content" : { "Fn::Join" : ["", [
                   "AWSAccessKeyId=", { "Ref" : "{{ name }}Keys" }, "\n",
@@ -337,10 +337,10 @@
         "KeyName"        : { "Ref" : "KeyName" },
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash -v\n",
-          
+
           {# **** Inject CF values into the environment **** #}
-          
-          "# Establish CF values and objects into script variables.\n",         
+
+          "# Establish CF values and objects into script variables.\n",
 
           "export CF_STACK_NAME='",   { "Ref" : "AWS::StackName" }, "'\n",
           "export CF_REGION='",       { "Ref" : "AWS::Region" }, "'\n",
@@ -348,11 +348,11 @@
           "export CF_ACCESS_KEY='",   { "Ref" : "{{ name }}Keys" }, "'\n",
           "export CF_SECRET_KEY='",   {"Fn::GetAtt": ["{{ name }}Keys", "SecretAccessKey"]}, "'\n",
           "export CF_WAIT_HANDLE='",  { "Ref" : "{{ name }}WaitHandle" }, "'\n",
-                    
+
           {# **** Inject environment variables about the deployment **** #}
-          
-	  "# Inject some NEPHO_* platform variables\n",
-		  
+
+          "# Inject some NEPHO_* platform variables\n",
+
           "export NEPHO_INSTANCE_ROLE='",     { "Ref" : "{{ name }}InstanceRole" }, "'\n",
           {% if elb is not none  %}
           "export NEPHO_FORWARD_HOSTNAME='", { "Fn::GetAtt" : [ "{{ elb }}", "DNSName" ]}, "'\n",
@@ -360,12 +360,12 @@
           {% endif %}
           {% if elb2 is not none  %}
           "export NEPHO_BACKEND_HOSTNAME='", { "Fn::GetAtt" : [ "{{ elb2 }}", "DNSName" ]}, "'\n",
-          {% endif %} 	  
+          {% endif %}
           {% if public_hostname is not none %}
           "export NEPHO_PUBLIC_HOSTNAME='", {{ public_hostname }}, "'\n",
           {% endif %}
           "export NEPHO_EXTERNAL_HOSTNAME=${NEPHO_PUBLIC_HOSTNAME}\n",
-		  
+
           {% if rds is not none  %}
           "export NEPHO_DATABASE_HOST='",     { "Fn::GetAtt": [ "{{ rds }}", "Endpoint.Address" ] }, "'\n",
           "export NEPHO_DATABASE_PORT='",     { "Fn::GetAtt": [ "{{ rds }}", "Endpoint.Port" ] }, "'\n",
@@ -384,7 +384,7 @@
                               "/",
                               { "Ref": "DBName" }
                            ]]}, "'\n",
-	  {% endif %}
+          {% endif %}
 
 
           {% if bucket is not none %}
@@ -392,44 +392,44 @@
           "export NEPHO_S3_BUCKET_URL='", { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "{{ bucket }}", "DomainName" ]}]] }, "'\n",
           "export NEPHO_S3_BUCKET_ACCESS='",  { "Ref" : "{{ name }}Keys" },  "'\n",
           "export NEPHO_S3_BUCKET_KEY='",   {"Fn::GetAtt": ["{{ name }}Keys", "SecretAccessKey"]},  "'\n",
-		  {% endif %}
+                  {% endif %}
 
       "# SES SMTP parameters\n",
-		  "export NEPHO_SES_SMTP='",          { "Ref" : "SESSMTP" }, "'\n",
-		  "export NEPHO_SES_SMTP_ENDPOINT='", { "Ref" : "SESEndpoint" }, "'\n",
-		  "export NEPHO_SES_SMTP_PORT='",     { "Ref" : "SESPort" }, "'\n",
-		  "export NEPHO_SES_SMTP_USER='",     { "Ref" : "SESUsername" }, "'\n",
-		  "export NEPHO_SES_SMTP_PASSWORD='", { "Ref" : "SESPassword" }, "'\n",
+                  "export NEPHO_SES_SMTP='",          { "Ref" : "SESSMTP" }, "'\n",
+                  "export NEPHO_SES_SMTP_ENDPOINT='", { "Ref" : "SESEndpoint" }, "'\n",
+                  "export NEPHO_SES_SMTP_PORT='",     { "Ref" : "SESPort" }, "'\n",
+                  "export NEPHO_SES_SMTP_USER='",     { "Ref" : "SESUsername" }, "'\n",
+                  "export NEPHO_SES_SMTP_PASSWORD='", { "Ref" : "SESPassword" }, "'\n",
 
-{#		  
+{#
           "# pull & setup puppet modules and run manifest\n",
           {% if management !='script' and management != 'none' %}
           "export NEPHO_GIT_REPO_URL='",    { "Ref" : "ConfigMgmtGitRepo" }, "'\n",
           "export NEPHO_GIT_REPO_BRANCH='", { "Ref" : "ConfigMgmtGitRepoBranch" }, "'\n",
           {% endif %}
-#}  
+#}
           "export NEPHO_BASE64_CONFIGS='{{ configs }}'\n",
           "export NEPHO_CONFIGS=$( echo ${NEPHO_BASE64_CONFIGS} | base64 --decode )\n",
-               
+
           {#  **** Include script snippets here ...  **** #}
-      
+
           {% for line in scripts.cf_pre_script  %}
-          {{ line }}, {% endfor %}  
-          
+          {{ line }}, {% endfor %}
+
           {% for line in scripts.cf_init_script %}
-          {{ line }}, {% endfor %}  
-          
+          {{ line }}, {% endfor %}
+
           {% for line in scripts.management %} {{ line }},
-          {% endfor %}  
+          {% endfor %}
 
           {% for line in scripts.cf_post_script %} {{ line }},
-          {% endfor %}  
+          {% endfor %}
 
           ""
         ]]}}
       }
     },
-  
+
     "{{ name }}WaitHandle" : {
       "Type" : "AWS::CloudFormation::WaitConditionHandle"
     },
@@ -443,5 +443,5 @@
         "Count"   : { "Ref" : "InstanceCount" }
       }
     }
-    
-   {%- endmacro -%} 
+
+   {%- endmacro -%}
