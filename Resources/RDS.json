@@ -1,24 +1,24 @@
 {#
 
-    Resources for RDS database on a data tier with 2 subnets we assume 
+    Resources for RDS database on a data tier with 2 subnets we assume
       is named "DataSubnet" and "DataSubnet2".
-      
+
     Expects objects:
-    
+
     - SubnetMappings: mappings object for the various subnet ranges
     - VPC: ref to VPC
-    - DataSubnet and DataSubnat2: the data tier subnets to place the DB on
-    
+    - DataSubnet and DataSubnet2: the data tier subnets to place the DB on
+
       Also expects all the parameter values setup in the RDS parameters block
-    
+
     Creates relevant objects:
-    
+
     - DBInstance
-    
-#}    
+
+#}
 
     {%- macro rds(name, subnet1, subnet2, db_access_range) -%}
-    
+
     {% if subnet1 is defined  %}
     "{{ name }}DBSubnetGroup" : {
       "Type" : "AWS::RDS::DBSubnetGroup",
@@ -28,7 +28,7 @@
       }
     },
     {% endif %}
-    
+
     "{{ name }}DBSecurityGroup" : {
       "Type" : "AWS::RDS::DBSecurityGroup",
       "Properties" : {
@@ -48,16 +48,18 @@
         "DBName"             : { "Ref" : "DBName" },
         "AllocatedStorage"   : { "Ref" : "DBAllocatedStorage" },
         "DBInstanceClass"    : { "Ref" : "DBClass" },
-        "Engine"             : { "Ref" : "DBEngine" }, 
-        "EngineVersion"      : { "Ref" : "DBEngineVersion" }, 
+        "Engine"             : { "Ref" : "DBEngine" },
+        "EngineVersion"      : { "Ref" : "DBEngineVersion" },
+        "LicenseModel"       : { "Ref" : "DBEngineLicenseModel" },
         "MasterUsername"     : { "Ref" : "DBUsername" } ,
         "MasterUserPassword" : { "Ref" : "DBPassword" },
         {% if subnet1 is defined  %}"DBSubnetGroupName"  : { "Ref" : "{{ name }}DBSubnetGroup" },{% endif %}
         "DBSecurityGroups"   : [ { "Ref" : "{{ name }}DBSecurityGroup" } ],
         "MultiAZ"            : { "Ref" : "MultiAZDatabase" }
-        
+
       }
     }
-    
-    {%- endmacro %} 
-            
+
+    {%- endmacro %}
+
+{# vim: set ft=jinja ts=4 sw=4 tw=0 foldmethod=syntax :#}
