@@ -91,7 +91,7 @@
 
     "MultiAZDatabase": {
       "Default": "false",
-      "Description" : "Create a multi-AZ Amazon RDS database instance",
+      "Description" : "Create a multi-AZ MySQL Amazon RDS database instance",
       "Type": "String",
       "AllowedValues" : [ "true", "false" ],
       "ConstraintDescription" : "must be either true or false."
