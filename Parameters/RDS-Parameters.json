@@ -10,6 +10,7 @@
     - DBUsername: username within the DB instance of database role with admin privileges over the database.
     - DBPassword: password for the database admin user.
     - DBEngine: flavor of DB to create (default: "MySQL")
+    - DBEngineLicenseModel: license model for DB engine (will depend on engine type, default: "general-public-license" )
     - DBEngineVersion: version of DB to use (will depend on engine type, default: "5.5" )
     - DBClass: size of the database to instantiate (default: db.m1.small)
     - DBAllocatedStorage: disk space in Gb set aside for runtime storage (default: 5 Gb)
@@ -18,11 +19,11 @@
 #}
 
     "DBName": {
-      "Default": "mydatabase",
+      "Default": "database",
       "Description" : "The database name",
       "Type": "String",
       "MinLength": "1",
-      "MaxLength": "64",
+      "MaxLength": "63",
       "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
       "ConstraintDescription" : "must begin with a letter and contain only alphanumeric characters."
     },
@@ -44,7 +45,7 @@
       "Description" : "The Database admin account password",
       "Type": "String",
       "MinLength": "1",
-      "MaxLength": "41",
+      "MaxLength": "30",
       "AllowedPattern" : "[a-zA-Z0-9]*",
       "ConstraintDescription" : "must contain only alphanumeric characters."
     },
@@ -53,7 +54,7 @@
       "Default" : "MySQL",
       "Description" : "Database type",
       "Type" : "String",
-      "AllowedValues" : [ "MySQL" ],
+      "AllowedValues" : [ "MySQL", "oracle-se1", "oracle-se", "oracle-ee", "postgres" ],
       "ConstraintDescription" : "must select a valid database instance type."
     },
 
@@ -61,6 +62,14 @@
       "Default" : "5.5",
       "Description" : "Database version",
       "Type" : "String"
+    },
+
+    "DBEngineLicenseModel" : {
+      "Default" : "general-public-license",
+      "Description" : "Database instance license model",
+      "Type" : "String",
+      "AllowedValues" : [ "general-public-license", "license-included", "bring-your-own-license" ],
+      "ConstraintDescription" : "must select a valid database instance license model."
     },
 
     "DBClass" : {
@@ -72,17 +81,17 @@
     },
 
     "DBAllocatedStorage" : {
-      "Default": "5",
+      "Default": "10",
       "Description" : "The size of the database (Gb)",
       "Type": "Number",
       "MinValue": "5",
       "MaxValue": "1024",
-      "ConstraintDescription" : "must be between 5 and 1024Gb."
+      "ConstraintDescription" : "must be between 5 and 3072Gb (10 and 3072 for Oracle)."
     },
 
     "MultiAZDatabase": {
       "Default": "false",
-      "Description" : "Create a multi-AZ MySQL Amazon RDS database instance",
+      "Description" : "Create a multi-AZ Amazon RDS database instance",
       "Type": "String",
       "AllowedValues" : [ "true", "false" ],
       "ConstraintDescription" : "must be either true or false."

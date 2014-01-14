@@ -1,16 +1,16 @@
-{# 
+{#
    Output strings specific to contacting the RDS database.
-#}   
+#}
 
     {%- macro mysql(name) -%}
-   
+
     "{{ name }}DBConnectionString": {
       "Description" : "Connection string for database",
       "Value" : { "Fn::Join": [ "", [ "mysql://",
                                       { "Ref" : "DBUsername" },
-                                      ":",      
-                                      { "Ref" : "DBPassword" },       
-                                       "@",                               
+                                      ":",
+                                      { "Ref" : "DBPassword" },
+                                       "@",
                                       { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
                                       ":",
                                       { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
@@ -30,23 +30,66 @@
 
     "{{ name }}DBCommandLine": {
       "Description" : "Shell access commandline",
-      "Value" : { 
-                  "Fn::Join": [                    	
-                                "", 
-                                [ 
+      "Value" : {
+                  "Fn::Join": [
+                                "",
+                                [
                                   "mysql -u ",
                                   { "Ref" : "DBUsername" },
                                   " -p",
-                                  { "Ref" : "DBPassword" },       
+                                  { "Ref" : "DBPassword" },
                                   " -h ",
                                   { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
                                   " -P ",
                                   { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
-                                  " ",  
+                                  " ",
                                   { "Ref": "DBName" }
                                 ]
                               ]
                    }
     }
-    
+
     {% endmacro %}
+
+    {%- macro oracle(name) -%}
+
+    "{{ name }}JDBCThinConnectionString": {
+      "Description" : "JDBC Thin connection string for database {{ name }}",
+      "Value" : { "Fn::Join": [ "", [ "jdbc:oracle:thin:@//",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      "/",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}JDBCOCIConnectionString": {
+      "Description" : "JDBC OCI connection string for database {{ name }}",
+      "Value" : { "Fn::Join": [ "", [ "jdbc:oracle:oci:@",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      ":",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}DBCommandLine": {
+      "Description" : "Shell access commandline",
+      "Value" : {
+                  "Fn::Join": [
+                                "",
+                                [
+                                  "sqlplus ",
+                                  { "Ref" : "DBUsername" },
+                                  "/",
+                                  { "Ref" : "DBPassword" },
+                                  "@",
+                                  { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] }
+                                ]
+                              ]
+                   }
+    }
+
+    {% endmacro %}
+
+{# vim: set ft=jinja ts=4 sw=3 tw=0 foldmethod=syntax :#}
