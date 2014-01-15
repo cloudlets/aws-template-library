@@ -106,10 +106,17 @@
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         {% if subnet is not none  %}"VpcId" : { "Ref" : "VPC" },{% endif %}
-        "GroupDescription" : "Security group with access for {{ ports }}",
+        "GroupDescription" : "Security group with access for specified TCP ports",
         "SecurityGroupIngress" : [
           {% for p in ports %}
-          {"IpProtocol" : "tcp", "FromPort" : "{{ p }}",  "ToPort" :  "{{ p }}", "CidrIp" : "0.0.0.0/0"},
+          {% if p is number %}
+              {% set fromport = '"FromPort" : "{{ p }}"' %}
+              {% set toport = '"ToPort" : "{{ p }}"' %}
+          {% else %}
+              {% set fromport = '"FromPort" : {{ p }}' %}
+              {% set toport = '"ToPort" : {{ p }}' %}
+          {% endif %}
+          {"IpProtocol" : "tcp", {{ fromport }},  {{ toport }}, "CidrIp" : "0.0.0.0/0"},
           {% endfor %}
           {"IpProtocol" : "tcp", "FromPort" : "22",  "ToPort" : "22",  "CidrIp" : { "Ref" : "SSHAccessRange"}}
         ]
@@ -404,3 +411,4 @@
     }
 
     {%- endmacro %}
+{# vim: set ft=jinja ts=8 sw=3 tw=0 foldmethod=syntax :#}

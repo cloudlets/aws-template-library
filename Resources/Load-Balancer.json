@@ -1,24 +1,38 @@
 {#
-    Load Balancer for web traffic on 80 and 443.
-    
+    Load Balancer for HTTP traffic on a specified TCP port
+
     Assumes:
-    
-    1) that the VPC is named "VPC," 
+
+    1) that the VPC is named "VPC,"
     2) a public network in the VPC named "PublicSubnet",
     3) a private network tier "PrivateSubnet",
     4) a Launch Config named "LaunchConfig"
-    5) typical set of instance parameters, in partiular value "InstanceCount"
-    
+    5) typical set of instance parameters, in particular value "InstanceCount"
+
 #}
 
-    {%- macro load_balancer(  
+    {%- macro load_balancer(
                               name,
-                              subnet=None, 
+                              subnet=None,
                               subnet2=None,
-                              internal=None, 
-                              port=80                             
+                              internal=None,
+                              port=80
                             ) -%}
-    
+
+    {% if port is number %}
+        {% set lbport = '"LoadBalancerPort" : "{{ port }}"' %}
+        {% set iport = '"InstancePort" : "{{ port }}"' %}
+        {% set fromport = '"FromPort" : "{{ port }}"' %}
+        {% set toport = '"ToPort" : "{{ port }}"' %}
+        {% set healthcheck = '"HTTP:{{ port }}/"' %}
+    {% else %}
+        {% set lbport = '"LoadBalancerPort" : {{ port }}' %}
+        {% set iport = '"InstancePort" : {{ port }}' %}
+        {% set fromport = '"FromPort" : {{ port }}' %}
+        {% set toport = '"ToPort" : {{ port }}' %}
+        {% set healthcheck = '"Fn::Join" : ["", ["HTTP:", {{ port }} , "/"]]' %}
+    {% endif %}
+
     "{{ name }}ElasticLoadBalancer" : {
       "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties" : {
@@ -29,9 +43,9 @@
          ],
         {% endif %}
         {% if internal is not none %}"Scheme" : "internal", {% endif %}
-        "Listeners" : [ { "LoadBalancerPort" : "{{ port }}",  "InstancePort" : "{{ port }}",  "Protocol" : "HTTP" }  ],
+        "Listeners" : [ { {{ lbport }},  {{ iport }},  "Protocol" : "HTTP" }  ],
         "HealthCheck" : {
-          "Target" : "HTTP:{{ port }}/",
+          "Target" : {{ healthcheck }},
           "HealthyThreshold" : "3",
           "UnhealthyThreshold" : "5",
           "Interval" : "10",
@@ -46,9 +60,10 @@
       "Properties" : {
         "GroupDescription" : "{{ name }} ELB Security Group with HTTP access on specified port 80 from the internet",
         {% if subnet is not none %}"VpcId" : { "Ref" : "VPC" },{% endif %}
-        "SecurityGroupIngress" : [ { "IpProtocol" : "tcp", "FromPort" : "{{ port }}",  "ToPort" : "{{ port }}",  "CidrIp" : "0.0.0.0/0"} ],
-        "SecurityGroupEgress"  : [ { "IpProtocol" : "tcp", "FromPort" : "{{ port }}",  "ToPort" : "{{ port }}",  "CidrIp" : "0.0.0.0/0"} ]        
+        "SecurityGroupIngress" : [ { "IpProtocol" : "tcp", {{ fromport }},  {{ toport }},  "CidrIp" : "0.0.0.0/0"} ],
+        "SecurityGroupEgress"  : [ { "IpProtocol" : "tcp", {{ fromport }},  {{ toport }},  "CidrIp" : "0.0.0.0/0"} ]
       }
     }
 
-    {%- endmacro  %}   
+    {%- endmacro  %}
+{# vim: set ft=jinja ts=4 sw=4 tw=0 foldmethod=syntax :#}
