@@ -1,104 +1,73 @@
-"ubuntu/images/ebs/ubuntu-precise-12.04-amd64-server-20131114": {
+{# ubuntu/images/ebs/ubuntu-precise-12.04-amd64-server-20131114 #}
+{# ubuntu/images/ebs/ubuntu-precise-12.04-i386-server-20131114  #}
+"UbuntuPrecise1204Ebs": {
     "ap-northeast-1": {
-        "AMI": "ami-df0a6dde"
+        "32": "ami-dd0a6ddc",
+        "64": "ami-df0a6dde"
     },
     "ap-southeast-1": {
-        "AMI": "ami-a0de8bf2"
+        "32": "ami-a2de8bf0",
+        "64": "ami-a0de8bf2"
     },
     "ap-southeast-2": {
-        "AMI": "ami-c90498f3"
+        "32": "ami-cb0498f1",
+        "64": "ami-c90498f3"
     },
     "eu-west-1": {
-        "AMI": "ami-07cb2670"
+        "32": "ami-19cb266e",
+        "64": "ami-07cb2670"
     },
     "sa-east-1": {
-        "AMI": "ami-e53492f8"
+        "32": "ami-eb3492f6",
+        "64": "ami-e53492f8"
     },
     "us-east-1": {
-        "AMI": "ami-d9a98cb0"
+        "32": "ami-c5a98cac",
+        "64": "ami-d9a98cb0"
     },
     "us-west-1": {
-        "AMI": "ami-0ca99f49"
+        "32": "ami-02a99f47",
+        "64": "ami-0ca99f49"
     },
     "us-west-2": {
-        "AMI": "ami-50b22960"
+        "32": "ami-6eb2295e",
+        "64": "ami-50b22960"
     }
 },
-"ubuntu/images/ebs/ubuntu-precise-12.04-i386-server-20131114": {
+
+{# ubuntu/images/ebs/ubuntu-raring-13.04-amd64-server-20131203 #}
+{# ubuntu/images/ebs/ubuntu-raring-13.04-i386-server-20131203 #}
+"UbuntuRaring1304Ebs": {
     "ap-northeast-1": {
-        "AMI": "ami-dd0a6ddc"
-    },
-    "ap-southeast-1": {
-        "AMI": "ami-a2de8bf0"
-    },
-    "ap-southeast-2": {
-        "AMI": "ami-cb0498f1"
-    },
-    "eu-west-1": {
-        "AMI": "ami-19cb266e"
-    },
-    "sa-east-1": {
-        "AMI": "ami-eb3492f6"
-    },
-    "us-east-1": {
-        "AMI": "ami-c5a98cac"
-    },
-    "us-west-1": {
-        "AMI": "ami-02a99f47"
-    },
-    "us-west-2": {
-        "AMI": "ami-6eb2295e"
-    }
-},
-"ubuntu/images/ebs/ubuntu-raring-13.04-amd64-server-20131203": {
-    "ap-northeast-1": {
+        "AMI": "ami-c73959c6",
         "AMI": "ami-cb3959ca"
     },
     "ap-southeast-1": {
+        "AMI": "ami-a67a2ef4",
         "AMI": "ami-a47a2ef6"
     },
     "ap-southeast-2": {
+        "AMI": "ami-0d950a37",
         "AMI": "ami-03950a39"
     },
     "eu-west-1": {
+        "AMI": "ami-5854bb2f",
         "AMI": "ami-4654bb31"
     },
     "sa-east-1": {
+        "AMI": "ami-e7a203fa",
         "AMI": "ami-e1a203fc"
     },
     "us-east-1": {
+        "AMI": "ami-b13012d8",
         "AMI": "ami-b53012dc"
     },
     "us-west-1": {
+        "AMI": "ami-b4ac9df1",
         "AMI": "ami-b6ac9df3"
     },
     "us-west-2": {
+        "AMI": "ami-8a0663ba",
         "AMI": "ami-8c0663bc"
-    }
-},
-"ubuntu/images/ebs/ubuntu-raring-13.04-i386-server-20131203": {
-    "ap-northeast-1": {
-        "AMI": "ami-c73959c6"
-    },
-    "ap-southeast-1": {
-        "AMI": "ami-a67a2ef4"
-    },
-    "ap-southeast-2": {
-        "AMI": "ami-0d950a37"
-    },
-    "eu-west-1": {
-        "AMI": "ami-5854bb2f"
-    },
-    "sa-east-1": {
-        "AMI": "ami-e7a203fa"
-    },
-    "us-east-1": {
-        "AMI": "ami-b13012d8"
-    },
-    "us-west-1": {
-        "AMI": "ami-b4ac9df1"
-    },
-    "us-west-2": {
-        "AMI": "ami-8a0663ba"
     }
 }
