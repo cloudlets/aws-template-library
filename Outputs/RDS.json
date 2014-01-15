@@ -2,6 +2,146 @@
    Output strings specific to contacting the RDS database.
 #}
 
+    {%- macro rds(
+                  name,
+                  engine='MySQL'
+                 ) -%}
+
+    {%- if engine == "MySQL" -%}
+    "{{ name }}DBConnectionString": {
+      "Description" : "Connection string for MySQL database",
+      "Value" : { "Fn::Join": [ "", [ "mysql://",
+                                      { "Ref" : "DBUsername" },
+                                      ":",
+                                      { "Ref" : "DBPassword" },
+                                       "@",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      "/",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}JDBCConnectionString": {
+      "Description" : "JDBC connection string for MySQL database {{ name }}",
+      "Value" : { "Fn::Join": [ "", [ "jdbc:mysql://",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      "/",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}DBCommandLine": {
+      "Description" : "Shell access commandline",
+      "Value" : {
+                  "Fn::Join": [
+                                "",
+                                [
+                                  "mysql -u ",
+                                  { "Ref" : "DBUsername" },
+                                  " -p",
+                                  { "Ref" : "DBPassword" },
+                                  " -h ",
+                                  { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                  " -P ",
+                                  { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                  " ",
+                                  { "Ref": "DBName" }
+                                ]
+                              ]
+                   }
+    }
+    {%- endif -%}
+
+    {%- if engine == "oracle-se1" or engine == "oracle-se" or engine == "oracle-ee" -%}
+    "{{ name }}JDBCThinConnectionString": {
+      "Description" : "JDBC Thin connection string for Oracle database {{ name }}",
+      "Value" : { "Fn::Join": [ "", [ "jdbc:oracle:thin:@//",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      "/",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}JDBCOCIConnectionString": {
+      "Description" : "JDBC OCI connection string for Oracle database {{ name }}",
+      "Value" : { "Fn::Join": [ "", [ "jdbc:oracle:oci:@",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      ":",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}DBCommandLine": {
+      "Description" : "Shell access commandline",
+      "Value" : {
+                  "Fn::Join": [
+                                "",
+                                [
+                                  "sqlplus ",
+                                  { "Ref" : "DBUsername" },
+                                  "/",
+                                  { "Ref" : "DBPassword" },
+                                  "@",
+                                  { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] }
+                                ]
+                              ]
+                   }
+    }
+    {%- endif -%}
+
+    {%- if engine == "postgres" -%}
+    "{{ name }}DBConnectionString": {
+      "Description" : "Connection string for PostgreSQL database {{ name }}",
+      "Value" : { "Fn::Join": [ "", [ "postgresql://",
+                                      { "Ref" : "DBUsername" },
+                                      ":",
+                                      { "Ref" : "DBPassword" },
+                                       "@",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      "/",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}JDBCConnectionString": {
+      "Description" : "JDBC connection string for PostgreSQL database {{ name }}",
+      "Value" : { "Fn::Join": [ "", [ "jdbc:postgresql://",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                      ":",
+                                      { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                      "/",
+                                      { "Ref": "DBName" }]]}
+    },
+
+    "{{ name }}DBCommandLine": {
+      "Description" : "Shell access commandline",
+      "Value" : {
+                  "Fn::Join": [
+                                "",
+                                [
+                                  "psql -U ",
+                                  { "Ref" : "DBUsername" },
+                                  " -W",
+                                  " -h ",
+                                  { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Address" ] },
+                                  " -p ",
+                                  { "Fn::GetAtt": [ "{{ name }}DBInstance", "Endpoint.Port" ] },
+                                  " ",
+                                  { "Ref": "DBName" }
+                                ]
+                              ]
+                   }
+    }
+    {%- endif -%}
+
+    {% endmacro %}
+
+    {# FIXME This macro is deprecated, replace with rds() #}
     {%- macro mysql(name) -%}
 
     "{{ name }}DBConnectionString": {
@@ -51,6 +191,7 @@
 
     {% endmacro %}
 
+    {# FIXME This macro is deprecated, replace with rds() #}
     {%- macro oracle(name) -%}
 
     "{{ name }}JDBCThinConnectionString": {
