@@ -3,19 +3,20 @@
     Parameters to apply to instances on specific tiers.
 
     Parameters:
-    
+
     - FrontendInstanceType: EC2 instance type on public tier (default: m1.small).
     - BackendtendInstanceType: EC2 instance type on public tier (default: m1.small).
     - FrontendInstanceCount: # of these instances (default: 2)
-    - BackendInstanceCount: # of these instances (default: 2) 
+    - BackendInstanceCount: # of these instances (default: 2)
     - LatencyScaleUp: ELB latency above which to scale up the tier
     - LatencyScaleDown: ELB latency above which to scale up the tier
-    
-#} 
-  
-  
+    - TierPort: ELB port to be forwarded to instances in the tier
+
+#}
+
+
     {%- macro inst_params(name) -%}
-       
+
     "{{ name }}InstanceType" : {
       "Description" : "{{ name }} Tier EC2 instance type",
       "Type" : "String",
@@ -45,6 +46,17 @@
           "Description" : "ELB latency below which to scale down the tier",
           "Type" : "Number",
           "Default" : "0.1"
+    },
+
+    "{{ name }}TierPort" : {
+          "Description" : "ELB port to be forwarded to instances in the tier",
+          "Type" : "Number",
+          "Default" : "80",
+          "MinValue" : "1",
+          "MaxValue" : "65535",
+          "ConstraintDescription" : "must be an integer between 1 and 65535 inclusive"
     }
 
     {%- endmacro -%}
+
+{# vim: set ft=jinja ts=4 sw=4 tw=0 foldmethod=syntax :#}
