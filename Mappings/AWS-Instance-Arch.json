@@ -1,0 +1,42 @@
+{#
+  EC2 instance type mapping.
+  HVM is only specified for instances that are available *only* as HVM, because
+  in general compute cases an HVM AMI is less likely to be available. To
+  override, simply do not use this mapping table and specify 64HVM directly.
+#}
+"AWSInstanceArch" : {
+  "t1.micro"    : { "Arch" : "64" },
+  {# General purpose #}
+  "m1.small"    : { "Arch" : "64" },
+  "m1.medium"   : { "Arch" : "64" },
+  "m1.large"    : { "Arch" : "64" },
+  "m1.xlarge"   : { "Arch" : "64" },
+  "m3.medium"   : { "Arch" : "64" },
+  "m3.large"    : { "Arch" : "64" },
+  "m3.xlarge"   : { "Arch" : "64" },
+  "m3.2xlarge"  : { "Arch" : "64" },
+  {# Compute optimized #}
+  "c1.medium"   : { "Arch" : "64" },
+  "c1.xlarge"   : { "Arch" : "64" },
+  "c3.large"    : { "Arch" : "64" },
+  "c3.xlarge"   : { "Arch" : "64" },
+  "c3.2xlarge"  : { "Arch" : "64" },
+  "c3.4xlarge"  : { "Arch" : "64" },
+  "c3.8xlarge"  : { "Arch" : "64" },
+  "cc2.8xlarge" : { "Arch" : "64HVM" },
+  {# Memory optimized #}
+  "m2.xlarge"   : { "Arch" : "64" },
+  "m2.2xlarge"  : { "Arch" : "64" },
+  "m2.4xlarge"  : { "Arch" : "64" },
+  "cr1.8xlarge" : { "Arch" : "64HVM" },
+  {# Storage optimized #}
+  "hi1.4xlarge" : { "Arch" : "64" },
+  "hs1.8xlarge" : { "Arch" : "64" },
+  "i2.xlarge"   : { "Arch" : "64HVM" },
+  "i2.2xlarge"  : { "Arch" : "64HVM" },
+  "i2.4xlarge"  : { "Arch" : "64HVM" },
+  "i2.8xlarge"  : { "Arch" : "64HVM" },
+  {# GPU instances #}
+  "cg1.4xlarge" : { "Arch" : "64HVM" },
+  "g2.2xlarge"  : { "Arch" : "64HVM" }
+}

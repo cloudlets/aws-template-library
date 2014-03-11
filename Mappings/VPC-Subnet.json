@@ -1,0 +1,31 @@
+{#
+  Generic subnet mappings for a VPC. Most implementations will not use all (or
+  even most) of these mappings.
+#}
+"VPCSubnetMappings" : {
+  "VPC":                   { "CIDR" : "10.0.0.0/16" },
+
+  "AZ1PublicSubnet1":      { "CIDR" : "10.0.0.0/24" },
+  "AZ2PublicSubnet1":      { "CIDR" : "10.0.1.0/24" },
+  "AZ3PublicSubnet1":      { "CIDR" : "10.0.2.0/24" },
+
+  "AZ1PublicSubnet2":      { "CIDR" : "10.0.10.0/24" },
+  "AZ2PublicSubnet2":      { "CIDR" : "10.0.11.0/24" },
+  "AZ3PublicSubnet2":      { "CIDR" : "10.0.12.0/24" },
+
+  "AZ1PrivateSubnet1":     { "CIDR" : "10.0.20.0/24" },
+  "AZ2PrivateSubnet1":     { "CIDR" : "10.0.21.0/24" },
+  "AZ3PrivateSubnet1":     { "CIDR" : "10.0.22.0/24" },
+
+  "AZ1PrivateSubnet2":     { "CIDR" : "10.0.30.0/24" },
+  "AZ2PrivateSubnet2":     { "CIDR" : "10.0.31.0/24" },
+  "AZ3PrivateSubnet2":     { "CIDR" : "10.0.32.0/24" },
+
+  "AZ1PersistanceSubnet1": { "CIDR" : "10.0.40.0/24" },
+  "AZ2PersistanceSubnet1": { "CIDR" : "10.0.41.0/24" },
+  "AZ3PersistanceSubnet1": { "CIDR" : "10.0.42.0/24" },
+
+  "AZ1PersistanceSubnet2": { "CIDR" : "10.0.50.0/24" },
+  "AZ2PersistanceSubnet2": { "CIDR" : "10.0.51.0/24" },
+  "AZ3PersistanceSubnet2": { "CIDR" : "10.0.52.0/24" }
+}
