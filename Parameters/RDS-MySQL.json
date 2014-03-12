@@ -1,0 +1,70 @@
+"DBName": {
+  "Default": "database",
+  "Description" : "The database name",
+  "Type": "String",
+  "MinLength": "1",
+  "MaxLength": "63",
+  "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+  "ConstraintDescription" : "must begin with a letter and contain only alphanumeric characters."
+},
+"DBUsername": {
+  "Default": "admin",
+  "NoEcho": "true",
+  "Description" : "The Database admin account username",
+  "Type": "String",
+  "MinLength": "1",
+  "MaxLength": "16",
+  "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+  "ConstraintDescription" : "must begin with a letter and contain only alphanumeric characters."
+},
+"DBPassword": {
+  "Default": "NEPHO_RANDOM_STRING",
+  "NoEcho": "true",
+  "Description" : "The Database admin account password",
+  "Type": "String",
+  "MinLength": "1",
+  "MaxLength": "30",
+  "AllowedPattern" : "[a-zA-Z0-9]*",
+  "ConstraintDescription" : "must contain only alphanumeric characters."
+},
+"DBEngine" : {
+  "Default" : "MySQL",
+  "Description" : "Database type",
+  "Type" : "String",
+  "AllowedValues" : [ "MySQL", "oracle-se1", "oracle-se", "oracle-ee", "postgres" ],
+  "ConstraintDescription" : "must select a valid database instance type."
+},
+"DBEngineVersion" : {
+  "Default" : "5.5",
+  "Description" : "Database version",
+  "Type" : "String"
+},
+"DBEngineLicenseModel" : {
+  "Default" : "general-public-license",
+  "Description" : "Database instance license model",
+  "Type" : "String",
+  "AllowedValues" : [ "general-public-license", "license-included", "bring-your-own-license" ],
+  "ConstraintDescription" : "must select a valid database instance license model."
+},
+"DBInstanceClass" : {
+  "Default" : "db.m1.small",
+  "Description" : "Database instance class",
+  "Type" : "String",
+  "AllowedValues" : [ "db.m1.small", "db.m1.large", "db.m1.xlarge", "db.m2.xlarge", "db.m2.2xlarge", "db.m2.4xlarge" ],
+  "ConstraintDescription" : "must select a valid database instance type."
+},
+"DBAllocatedStorage" : {
+  "Default": "10",
+  "Description" : "The size of the database (Gb)",
+  "Type": "Number",
+  "MinValue": "5",
+  "MaxValue": "3072",
+  "ConstraintDescription" : "must be between 5 and 3072Gb (10 and 3072 for Oracle)."
+},
+"MultiAZDatabase": {
+  "Default": "false",
+  "Description" : "Create a multi-AZ MySQL Amazon RDS database instance",
+  "Type": "String",
+  "AllowedValues" : [ "true", "false" ],
+  "ConstraintDescription" : "must be either true or false."
+}

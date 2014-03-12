@@ -1,0 +1,15 @@
+"Zone1": {
+    "Description" : "First availability zone",
+    "Default": "us-east-1a",
+    "Type": "String"
+},
+"Zone2": {
+    "Description" : "Second availability zone",
+    "Default": "us-east-1b",
+    "Type": "String"
+},
+"Zone3": {
+    "Description" : "Third availability zone",
+    "Default": "us-east-1c",
+    "Type": "String"
+}
